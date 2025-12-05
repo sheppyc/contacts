@@ -59,43 +59,35 @@ public class Contacts: NSObject {
         // "school": CNLabelSchool, // (iOS ^13.x.x only)
     ], "custom", "custom")
 
-    public func getContact(_ contactId: String, _ projection: GetContactsProjectionInput) -> ContactPayload? {
+    public func getContact(_ contactId: String, _ projection: GetContactsProjectionInput) throws -> ContactPayload {
         let projection = projection.getProjection()
 
         let cs = CNContactStore()
 
-        do {
-            let contactResult = try cs.unifiedContact(withIdentifier: contactId, keysToFetch: projection)
+        let contactResult = try cs.unifiedContact(withIdentifier: contactId, keysToFetch: projection)
 
-            let contact = ContactPayload(contactId)
+        let contact = ContactPayload(contactId)
 
-            contact.fillData(contactResult)
+        contact.fillData(contactResult)
 
-            return contact
-        } catch {
-            return nil
-        }
+        return contact
     }
 
-    public func getContacts(_ projection: GetContactsProjectionInput) -> [ContactPayload] {
+    public func getContacts(_ projection: GetContactsProjectionInput) throws -> [ContactPayload] {
         let projection = projection.getProjection()
 
         var contacts = [ContactPayload]()
 
         let cs = CNContactStore()
 
-        do {
-            let request = CNContactFetchRequest(keysToFetch: projection)
+        let request = CNContactFetchRequest(keysToFetch: projection)
 
-            try cs.enumerateContacts(with: request) { (contactData, _) in
-                let contact = ContactPayload(contactData.identifier)
+        try cs.enumerateContacts(with: request) { (contactData, _) in
+            let contact = ContactPayload(contactData.identifier)
 
-                contact.fillData(contactData)
+            contact.fillData(contactData)
 
-                contacts.append(contact)
-            }
-        } catch {
-            // oops
+            contacts.append(contact)
         }
 
         return contacts

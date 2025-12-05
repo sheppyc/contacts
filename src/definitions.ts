@@ -1,7 +1,22 @@
 import type { PermissionState } from '@capacitor/core';
 
+/**
+ * Extended permission state that includes 'limited' for iOS 18+.
+ * When the user selects "Select Contacts..." instead of "Allow Full Access",
+ * the permission state will be 'limited' and only the selected contacts
+ * will be accessible via getContacts().
+ */
+export type ContactPermissionState = PermissionState | 'limited';
+
 export interface PermissionStatus {
-  contacts: PermissionState;
+  /**
+   * Permission state for contacts.
+   *
+   * On iOS 18+, this can be 'limited' when the user has selected
+   * specific contacts to share with the app instead of granting
+   * full access.
+   */
+  contacts: ContactPermissionState;
 }
 
 export interface ContactsPlugin {

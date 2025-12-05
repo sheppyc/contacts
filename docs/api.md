@@ -103,9 +103,9 @@ pickContact(options: PickContactOptions) => Promise<PickContactResult>
 
 #### PermissionStatus
 
-| Prop           | Type                                             |
-| -------------- | ------------------------------------------------ |
-| **`contacts`** | <code>[PermissionState](#permissionstate)</code> |
+| Prop           | Type                                                           | Description                                                                                                                                                          |
+| -------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`contacts`** | <code>[ContactPermissionState](#contactpermissionstate)</code> | Permission state for contacts. On iOS 18+, this can be 'limited' when the user has selected specific contacts to share with the app instead of granting full access. |
 
 
 #### GetContactResult
@@ -362,6 +362,16 @@ pickContact(options: PickContactOptions) => Promise<PickContactResult>
 
 
 ### Type Aliases
+
+
+#### ContactPermissionState
+
+Extended permission state that includes 'limited' for iOS 18+.
+When the user selects "Select Contacts..." instead of "Allow Full Access",
+the permission state will be 'limited' and only the selected contacts
+will be accessible via getContacts().
+
+<code>[PermissionState](#permissionstate) | 'limited'</code>
 
 
 #### PermissionState

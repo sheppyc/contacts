@@ -109,16 +109,15 @@ public class ContactsPlugin: CAPPlugin, CNContactPickerDelegate {
 
             let projectionInput = GetContactsProjectionInput(call.getObject("projection") ?? JSObject())
 
-            let contact = implementation.getContact(contactId, projectionInput)
+            do {
+                let contact = try implementation.getContact(contactId, projectionInput)
 
-            guard let contact = contact else {
-                call.reject("Contact not found.")
-                return
+                call.resolve([
+                    "contact": contact.getJSObject()
+                ])
+            } catch {
+                call.reject("Failed to get contact: \(error.localizedDescription)", nil, error)
             }
-
-            call.resolve([
-                "contact": contact.getJSObject()
-            ])
         }
     }
 
@@ -128,17 +127,21 @@ public class ContactsPlugin: CAPPlugin, CNContactPickerDelegate {
         } else {
             let projectionInput = GetContactsProjectionInput(call.getObject("projection") ?? JSObject())
 
-            let contacts = implementation.getContacts(projectionInput)
+            do {
+                let contacts = try implementation.getContacts(projectionInput)
 
-            var contactsJSArray: JSArray = JSArray()
+                var contactsJSArray: JSArray = JSArray()
 
-            for contact in contacts {
-                contactsJSArray.append(contact.getJSObject())
+                for contact in contacts {
+                    contactsJSArray.append(contact.getJSObject())
+                }
+
+                call.resolve([
+                    "contacts": contactsJSArray
+                ])
+            } catch {
+                call.reject("Failed to get contacts: \(error.localizedDescription)", nil, error)
             }
-
-            call.resolve([
-                "contacts": contactsJSArray
-            ])
         }
     }
 

@@ -62,6 +62,10 @@ public class GetContactsProjectionInput {
     public func getProjection() -> [CNKeyDescriptor] {
         var projection: [CNKeyDescriptor] = []
 
+        // Always include the identifier key - it's required for basic functionality
+        // and CNContactFetchRequest fails if keysToFetch is empty
+        projection.append(CNContactIdentifierKey as CNKeyDescriptor)
+
         // Name
         if self.name == true {
             projection.append(CNContactFormatter.descriptorForRequiredKeys(for: .fullName))
